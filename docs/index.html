@@ -3,494 +3,359 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LPI Developer Kit — Contributor Leaderboard</title>
+    <title>LPI Developer Kit — Mission Control</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0a0e17; color: #e2e8f0; min-height: 100vh; }
 
-        body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: #0a0e17;
-            color: #e2e8f0;
-            min-height: 100vh;
-        }
+        .hero { background: linear-gradient(135deg, #0a0e17 0%, #1a1f35 50%, #0a0e17 100%); border-bottom: 1px solid rgba(99,179,237,0.1); padding: 2.5rem 2rem 1.5rem; text-align: center; }
+        .hero h1 { font-size: 2rem; font-weight: 700; background: linear-gradient(135deg, #63b3ed, #b794f4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero .sub { color: #718096; font-size: 0.9rem; margin-top: 0.3rem; }
+        .mock-badge { display: inline-block; background: rgba(237,137,54,0.15); color: #ed8936; border: 1px solid rgba(237,137,54,0.3); border-radius: 4px; padding: 0.1rem 0.5rem; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; margin-left: 0.5rem; }
 
-        .hero {
-            background: linear-gradient(135deg, #0a0e17 0%, #1a1f35 50%, #0a0e17 100%);
-            border-bottom: 1px solid rgba(99, 179, 237, 0.1);
-            padding: 3rem 2rem 2rem;
-            text-align: center;
-        }
+        .stats-row { display: flex; justify-content: center; gap: 0.8rem; flex-wrap: wrap; margin: 1.5rem auto; max-width: 1100px; }
+        .stat { background: rgba(26,32,53,0.8); border: 1px solid rgba(99,179,237,0.12); border-radius: 10px; padding: 1rem 1.5rem; min-width: 120px; text-align: center; transition: all 0.2s; }
+        .stat:hover { border-color: rgba(99,179,237,0.3); transform: translateY(-1px); }
+        .stat b { display: block; font-size: 2rem; font-family: 'JetBrains Mono', monospace; background: linear-gradient(135deg, #63b3ed, #b794f4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat small { color: #718096; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; }
 
-        .hero h1 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #63b3ed, #b794f4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
-        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
+        .row { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+        .col-main { flex: 3; min-width: 600px; }
+        .col-side { flex: 1; min-width: 280px; }
 
-        .hero .subtitle {
-            color: #718096;
-            font-size: 0.95rem;
-            margin-bottom: 2rem;
-        }
+        .timeline { display: flex; justify-content: center; gap: 0; margin-bottom: 1rem; background: #1a2035; border-radius: 8px; overflow: hidden; border: 1px solid #2d3748; }
+        .timeline button { flex: 1; padding: 0.6rem 0.5rem; background: transparent; border: none; color: #718096; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 0.75rem; transition: all 0.2s; border-right: 1px solid #2d3748; }
+        .timeline button:last-child { border-right: none; }
+        .timeline button:hover { background: rgba(99,179,237,0.05); color: #a0aec0; }
+        .timeline button.active { background: rgba(99,179,237,0.1); color: #63b3ed; font-weight: 600; }
 
-        .stats-grid {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .stat-card {
-            background: rgba(26, 32, 53, 0.8);
-            border: 1px solid rgba(99, 179, 237, 0.15);
-            border-radius: 12px;
-            padding: 1.2rem 2rem;
-            min-width: 140px;
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            border-color: rgba(99, 179, 237, 0.4);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(99, 179, 237, 0.1);
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            font-family: 'JetBrains Mono', monospace;
-            background: linear-gradient(135deg, #63b3ed, #b794f4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .stat-label { color: #718096; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
-
-        .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
-
-        .controls {
-            display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; align-items: center;
-        }
-
-        .search-box {
-            flex: 1; min-width: 200px;
-            background: #1a2035;
-            border: 1px solid #2d3748;
-            border-radius: 8px;
-            padding: 0.7rem 1rem;
-            color: #e2e8f0;
-            font-size: 0.9rem;
-            font-family: 'Inter', sans-serif;
-            outline: none;
-            transition: border-color 0.2s;
-        }
+        .controls { display: flex; gap: 0.8rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
+        .search-box { flex: 1; min-width: 180px; background: #1a2035; border: 1px solid #2d3748; border-radius: 8px; padding: 0.6rem 1rem; color: #e2e8f0; font-size: 0.85rem; font-family: 'Inter', sans-serif; outline: none; }
         .search-box:focus { border-color: #63b3ed; }
         .search-box::placeholder { color: #4a5568; }
+        .fbtn { background: #1a2035; border: 1px solid #2d3748; border-radius: 6px; padding: 0.5rem 0.9rem; color: #a0aec0; cursor: pointer; font-size: 0.78rem; font-family: 'Inter', sans-serif; transition: all 0.2s; }
+        .fbtn:hover, .fbtn.active { border-color: #63b3ed; color: #63b3ed; background: rgba(99,179,237,0.08); }
 
-        .filter-btn {
-            background: #1a2035;
-            border: 1px solid #2d3748;
-            border-radius: 8px;
-            padding: 0.7rem 1.2rem;
-            color: #a0aec0;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-family: 'Inter', sans-serif;
-            transition: all 0.2s;
-        }
-        .filter-btn:hover, .filter-btn.active {
-            border-color: #63b3ed;
-            color: #63b3ed;
-            background: rgba(99, 179, 237, 0.08);
-        }
-
-        .table-wrapper {
-            background: rgba(26, 32, 53, 0.6);
-            border: 1px solid rgba(99, 179, 237, 0.1);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
+        .table-wrap { background: rgba(26,32,53,0.6); border: 1px solid rgba(99,179,237,0.1); border-radius: 10px; overflow: hidden; max-height: 70vh; overflow-y: auto; }
         table { width: 100%; border-collapse: collapse; }
+        th { background: rgba(26,32,53,0.95); padding: 0.65rem 0.8rem; text-align: left; color: #718096; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; position: sticky; top: 0; z-index: 1; }
+        td { padding: 0.5rem 0.8rem; border-top: 1px solid rgba(45,55,72,0.4); font-size: 0.82rem; }
+        tr { transition: background 0.1s; }
+        tr:hover { background: rgba(99,179,237,0.04); }
+        .r1 { color: #ffd700; font-weight: 700; }
+        .r2 { color: #c0c0c0; font-weight: 700; }
+        .r3 { color: #cd7f32; font-weight: 700; }
 
-        th {
-            background: rgba(26, 32, 53, 0.9);
-            padding: 0.9rem 1.2rem;
-            text-align: left;
-            color: #718096;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            font-weight: 600;
-            position: sticky;
-            top: 0;
-        }
+        .lv { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 20px; font-size: 0.7rem; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+        .lv0 { background: rgba(160,174,192,0.1); color: #718096; border: 1px solid rgba(160,174,192,0.2); }
+        .lv1 { background: rgba(72,187,120,0.12); color: #68d391; border: 1px solid rgba(72,187,120,0.25); }
+        .lv2 { background: rgba(99,179,237,0.12); color: #63b3ed; border: 1px solid rgba(99,179,237,0.25); }
+        .lv3 { background: rgba(183,148,244,0.12); color: #b794f4; border: 1px solid rgba(183,148,244,0.25); }
 
-        td {
-            padding: 0.8rem 1.2rem;
-            border-top: 1px solid rgba(45, 55, 72, 0.5);
-            font-size: 0.9rem;
-        }
+        .bar { display: inline-block; height: 5px; border-radius: 3px; background: #2d3748; width: 60px; vertical-align: middle; margin-right: 0.4rem; }
+        .bar .fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #63b3ed, #b794f4); }
+        .sc { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #a0aec0; }
+        .tag { display: inline-block; background: rgba(45,55,72,0.7); border-radius: 3px; padding: 0.1rem 0.4rem; font-size: 0.65rem; color: #a0aec0; margin: 0.05rem; }
 
-        tr { transition: background 0.15s; }
-        tr:hover { background: rgba(99, 179, 237, 0.04); }
-        tr.top-3 td:first-child { font-weight: 700; }
+        .panel { background: rgba(26,32,53,0.7); border: 1px solid rgba(99,179,237,0.1); border-radius: 10px; padding: 1rem; margin-bottom: 1rem; }
+        .panel h3 { font-size: 0.8rem; color: #718096; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.8rem; }
+        .feed-item { padding: 0.5rem 0; border-bottom: 1px solid rgba(45,55,72,0.3); font-size: 0.8rem; }
+        .feed-item:last-child { border-bottom: none; }
+        .feed-time { color: #4a5568; font-size: 0.7rem; font-family: 'JetBrains Mono', monospace; }
+        .feed-up { color: #68d391; }
+        .feed-new { color: #63b3ed; }
+        .feed-drop { color: #fc8181; }
+        .feed-star { color: #ffd700; }
 
-        .rank-1 { color: #ffd700; }
-        .rank-2 { color: #c0c0c0; }
-        .rank-3 { color: #cd7f32; }
+        .team-bar { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; font-size: 0.8rem; }
+        .team-bar .tname { flex: 1; color: #a0aec0; }
+        .team-bar .tbar { flex: 2; height: 8px; background: #2d3748; border-radius: 4px; }
+        .team-bar .tbar .tfill { height: 100%; border-radius: 4px; transition: width 0.4s; }
+        .team-bar .tcount { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #718096; width: 30px; text-align: right; }
 
-        .level-badge {
-            display: inline-block;
-            padding: 0.2rem 0.7rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            font-family: 'JetBrains Mono', monospace;
-        }
-        .level-1 { background: rgba(72, 187, 120, 0.15); color: #68d391; border: 1px solid rgba(72, 187, 120, 0.3); }
-        .level-2 { background: rgba(99, 179, 237, 0.15); color: #63b3ed; border: 1px solid rgba(99, 179, 237, 0.3); }
-        .level-3 { background: rgba(183, 148, 244, 0.15); color: #b794f4; border: 1px solid rgba(183, 148, 244, 0.3); }
+        .velocity { display: inline-block; font-size: 0.7rem; font-family: 'JetBrains Mono', monospace; margin-left: 0.3rem; }
+        .v-up { color: #68d391; }
+        .v-flat { color: #718096; }
+        .v-new { color: #63b3ed; }
 
-        .score-bar {
-            display: inline-block;
-            height: 6px;
-            border-radius: 3px;
-            background: #2d3748;
-            width: 80px;
-            position: relative;
-            vertical-align: middle;
-            margin-right: 0.5rem;
-        }
-        .score-bar .fill {
-            height: 100%;
-            border-radius: 3px;
-            background: linear-gradient(90deg, #63b3ed, #b794f4);
-            transition: width 0.5s ease;
-        }
-
-        .score-text {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            color: #a0aec0;
-        }
-
-        .skills-tag {
-            display: inline-block;
-            background: rgba(45, 55, 72, 0.8);
-            border-radius: 4px;
-            padding: 0.15rem 0.5rem;
-            font-size: 0.7rem;
-            color: #a0aec0;
-            margin: 0.1rem;
-        }
+        .alert { background: rgba(237,137,54,0.08); border: 1px solid rgba(237,137,54,0.2); border-radius: 8px; padding: 0.7rem; margin-bottom: 0.8rem; font-size: 0.8rem; color: #ed8936; }
 
         a { color: #63b3ed; text-decoration: none; }
         a:hover { text-decoration: underline; }
-
-        .mock-badge {
-            display: inline-block;
-            background: rgba(237, 137, 54, 0.15);
-            color: #ed8936;
-            border: 1px solid rgba(237, 137, 54, 0.3);
-            border-radius: 4px;
-            padding: 0.1rem 0.5rem;
-            font-size: 0.65rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-left: 0.5rem;
-        }
-
-        .timeline {
-            display: flex;
-            justify-content: center;
-            gap: 0;
-            margin-bottom: 2rem;
-            background: #1a2035;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid #2d3748;
-        }
-
-        .timeline-btn {
-            flex: 1;
-            padding: 0.8rem 1rem;
-            background: transparent;
-            border: none;
-            color: #718096;
-            cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.8rem;
-            transition: all 0.2s;
-            border-right: 1px solid #2d3748;
-        }
-        .timeline-btn:last-child { border-right: none; }
-        .timeline-btn:hover { background: rgba(99, 179, 237, 0.05); color: #a0aec0; }
-        .timeline-btn.active {
-            background: rgba(99, 179, 237, 0.1);
-            color: #63b3ed;
-            font-weight: 600;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            color: #4a5568;
-            font-size: 0.8rem;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: #4a5568;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-in { animation: fadeIn 0.4s ease forwards; }
+        .footer { text-align: center; padding: 1.5rem; color: #4a5568; font-size: 0.75rem; }
     </style>
 </head>
 <body>
-
 <div class="hero">
-    <h1>LPI Developer Kit</h1>
-    <p class="subtitle">LifeAtlas Contributor Program — Live Leaderboard <span class="mock-badge">mock data</span></p>
-    <div class="stats-grid">
-        <div class="stat-card"><div class="stat-number" id="stat-total">0</div><div class="stat-label">Contributors</div></div>
-        <div class="stat-card"><div class="stat-number" id="stat-l1">0</div><div class="stat-label">Level 1</div></div>
-        <div class="stat-card"><div class="stat-number" id="stat-l2">0</div><div class="stat-label">Level 2</div></div>
-        <div class="stat-card"><div class="stat-number" id="stat-l3">0</div><div class="stat-label">Level 3</div></div>
-        <div class="stat-card"><div class="stat-number" id="stat-agents">0</div><div class="stat-label">Agents Built</div></div>
-    </div>
+    <h1>LPI Mission Control</h1>
+    <p class="sub">LifeAtlas Contributor Program <span class="mock-badge">mock data — 101 interns</span></p>
+</div>
+
+<div class="stats-row">
+    <div class="stat"><b id="s-total">0</b><small>Registered</small></div>
+    <div class="stat"><b id="s-active">0</b><small>Active</small></div>
+    <div class="stat"><b id="s-l2">0</b><small>Level 2+</small></div>
+    <div class="stat"><b id="s-l3">0</b><small>Level 3</small></div>
+    <div class="stat"><b id="s-agents">0</b><small>Agents Built</small></div>
+    <div class="stat"><b id="s-drop">0</b><small>Dropped</small></div>
+    <div class="stat"><b id="s-conv">0%</b><small>L1→L3 Rate</small></div>
 </div>
 
 <div class="container">
     <div class="timeline">
-        <button class="timeline-btn active" onclick="setTimeline('day1')">Day 1</button>
-        <button class="timeline-btn" onclick="setTimeline('day3')">Day 3</button>
-        <button class="timeline-btn" onclick="setTimeline('day7')">Day 7</button>
-        <button class="timeline-btn" onclick="setTimeline('week2')">Week 2</button>
-        <button class="timeline-btn" onclick="setTimeline('week4')">Week 4</button>
-        <button class="timeline-btn" onclick="setTimeline('month2')">Month 2</button>
+        <button class="active" onclick="go('day1',this)">Day 1</button>
+        <button onclick="go('day3',this)">Day 3</button>
+        <button onclick="go('day7',this)">Day 7</button>
+        <button onclick="go('week2',this)">Week 2</button>
+        <button onclick="go('week4',this)">Week 4</button>
+        <button onclick="go('month2',this)">Month 2</button>
     </div>
 
-    <div class="controls">
-        <input type="text" class="search-box" placeholder="Search by name, skill, or interest..." oninput="filterTable(this.value)">
-        <button class="filter-btn" onclick="filterLevel('all')">All</button>
-        <button class="filter-btn" onclick="filterLevel(3)">Level 3</button>
-        <button class="filter-btn" onclick="filterLevel(2)">Level 2</button>
-        <button class="filter-btn" onclick="filterLevel(1)">Level 1</button>
-    </div>
+    <div class="row">
+        <div class="col-main">
+            <div class="controls">
+                <input type="text" class="search-box" placeholder="Search name, skill, team..." oninput="search(this.value)">
+                <button class="fbtn active" onclick="filt('all',this)">All</button>
+                <button class="fbtn" onclick="filt(3,this)">L3</button>
+                <button class="fbtn" onclick="filt(2,this)">L2</button>
+                <button class="fbtn" onclick="filt(1,this)">L1</button>
+                <button class="fbtn" onclick="filt(0,this)">Dropped</button>
+            </div>
+            <div class="table-wrap">
+                <table><thead><tr><th>#</th><th>Name</th><th>Lvl</th><th>Score</th><th>Velocity</th><th>Skills</th><th>Team</th></tr></thead><tbody id="tbody"></tbody></table>
+            </div>
+        </div>
 
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>GitHub</th>
-                    <th>Level</th>
-                    <th>Score</th>
-                    <th>Skills</th>
-                    <th>Team</th>
-                </tr>
-            </thead>
-            <tbody id="leaderboard-body"></tbody>
-        </table>
+        <div class="col-side">
+            <div id="alerts-panel"></div>
+
+            <div class="panel">
+                <h3>Activity Feed</h3>
+                <div id="feed"></div>
+            </div>
+
+            <div class="panel">
+                <h3>Team Health</h3>
+                <div id="teams"></div>
+            </div>
+
+            <div class="panel">
+                <h3>Conversion Funnel</h3>
+                <div id="funnel"></div>
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="footer">
-    Auto-updated on every merge to <a href="https://github.com/Life-Atlas/lpi-developer-kit">Life-Atlas/lpi-developer-kit</a><br>
-    Built with the LifeAtlas Agent Fabric
-</div>
+<div class="footer">Auto-updated on every merge | <a href="https://github.com/Life-Atlas/lpi-developer-kit">Life-Atlas/lpi-developer-kit</a> | Built by the LifeAtlas Agent Fabric</div>
 
 <script>
-const MOCK_DATA = {
+// Generate 101 realistic mock interns
+function generateCohort(stage) {
+    const firstNames = ["Aarav","Aditi","Aisha","Akash","Amara","Ananya","Anil","Ankita","Arjun","Aryan","Bhavya","Chetan","Deepa","Deepak","Dev","Dhruv","Diya","Esha","Farhan","Gaurav","Harsh","Isha","Jaya","Karan","Kavya","Krishna","Laksh","Lavanya","Manav","Meera","Mohit","Nandini","Neha","Nikhil","Nisha","Omkar","Pallavi","Pankaj","Pooja","Prachi","Pranav","Priya","Rahul","Raj","Rajesh","Riya","Rohan","Ruchi","Sahil","Sakshi","Samar","Sanjay","Sara","Shivam","Shreya","Siddharth","Simran","Sneha","Suhani","Sunil","Swati","Tanvi","Tanya","Uday","Varun","Veer","Vidya","Vikram","Yash","Zara","Anishaa","Touqeer","Faariyh","Anshumaan","Siddhi","Anam","Joydeep","Misha","Lavanya P","Harshit","Ritheeshwar","Saima","Krishna G","Chetna","Inderjeet","Sonal","Prakriti","Vansh","Tejaswita","Vineet","Jahanvi","Asmi","Lavneesh","Saanvi","Jatin","Ankit","Siddhi S","Bhavesh","Lijo","Priyanshu","Aditya"];
+    const lastNames = ["Sharma","Patel","Kumar","Singh","Gupta","Agarwal","Verma","Mehta","Chaudhuri","Reddy","Nair","Joshi","Mishra","Bhat","Rao","Kapoor","Das","Malhotra","Saxena","Thakur","Shah","Pillai","Iyer","Menon","Chopra","Hamdani","Rizwan","Parashar","Maheshwari","Sahu","Nandi","Arora"];
+    const allSkills = ["python","pytorch","tensorflow","react","fastapi","flask","docker","langchain","NLP","CV","sql","pandas","javascript","node","streamlit","supabase","mongodb","REST","html-css","R","powerbi","arduino","java","c++","unity","blender","unreal"];
+    const allInterests = ["agents","healthcare","NLP","3D","security","edge","IoT","data","digital-twin","manufacturing","energy"];
+    const teamNames = ["Agent Builders","AI/ML Pipeline","Research & Content","QA & Security","Data & Knowledge","3D & Visualization"];
+
+    const seed = (i) => ((i * 2654435761) >>> 0) / 4294967296;
+
+    const configs = {
+        day1: { registered: 32, l2: 0, l3: 0, dropped: 0, maxScore: 0, teams: false },
+        day3: { registered: 71, l2: 22, l3: 3, dropped: 0, maxScore: 5, teams: false },
+        day7: { registered: 81, l2: 48, l3: 18, dropped: 5, maxScore: 9, teams: false },
+        week2: { registered: 85, l2: 52, l3: 28, dropped: 12, maxScore: 12, teams: true },
+        week4: { registered: 85, l2: 45, l3: 35, dropped: 18, maxScore: 18, teams: true },
+        month2: { registered: 85, l2: 30, l3: 42, dropped: 25, maxScore: 28, teams: true },
+    };
+
+    const cfg = configs[stage];
+    const people = [];
+
+    for (let i = 0; i < 101; i++) {
+        const s = seed(i);
+        const s2 = seed(i + 200);
+        const s3 = seed(i + 500);
+        const fn = firstNames[i % firstNames.length];
+        const ln = lastNames[i % lastNames.length];
+        const name = `${fn} ${ln}`;
+        const github = `${fn.toLowerCase()}-${ln.toLowerCase().slice(0,3)}`;
+        const nSkills = 2 + Math.floor(s * 4);
+        const skills = [];
+        for (let j = 0; j < nSkills; j++) skills.push(allSkills[Math.floor(seed(i * 10 + j) * allSkills.length)]);
+        const interest = allInterests[Math.floor(s2 * allInterests.length)];
+
+        let level = 0, score = 0, team = "—", agents = 0, velocity = "", dropped = false;
+        const rank = s; // 0=best, 1=worst
+
+        if (i < cfg.dropped && s > 0.6) {
+            dropped = true; level = 0; score = 0; velocity = "";
+        } else if (i < cfg.l3 + cfg.dropped) {
+            level = 3;
+            score = Math.round(cfg.maxScore * (1 - rank * 0.6) + s2 * 2);
+            agents = stage === 'month2' ? Math.floor(s3 * 5) + 1 : stage === 'week4' ? Math.floor(s3 * 3) + 1 : stage === 'week2' ? Math.floor(s3 * 2) : 0;
+            velocity = rank < 0.3 ? "+++" : rank < 0.6 ? "++" : "+";
+            if (cfg.teams) team = teamNames[Math.floor(s2 * teamNames.length)] + (rank < 0.08 ? " (Lead)" : "");
+        } else if (i < cfg.l3 + cfg.l2 + cfg.dropped) {
+            level = 2;
+            score = Math.round(cfg.maxScore * 0.4 * (1 - rank * 0.5) + s2);
+            velocity = rank < 0.4 ? "++" : "+";
+            if (cfg.teams) team = teamNames[Math.floor(s2 * teamNames.length)];
+        } else if (i < cfg.registered + cfg.dropped) {
+            level = 1;
+            score = 0;
+            velocity = stage === 'day1' ? "new" : rank < 0.5 ? "+" : "";
+        } else {
+            continue; // not yet registered
+        }
+
+        people.push({ name, github, level, score, skills: [...new Set(skills)], interest, team, agents, velocity, dropped });
+    }
+
+    people.sort((a, b) => {
+        if (a.dropped !== b.dropped) return a.dropped ? 1 : -1;
+        if (b.score !== a.score) return b.score - a.score;
+        return b.level - a.level;
+    });
+    return people;
+}
+
+const feeds = {
     day1: [
-        { name: "Siddhi Sahu", github: "siddhi-sahu", level: 1, score: 0, skills: ["python","tensorflow","fastapi","RAG"], interests: ["agents"], team: "—", my_twin: "Track my caffeine intake vs productivity" },
-        { name: "Ananyaa M", github: "ananyaa-m", level: 1, score: 0, skills: ["python","tensorflow","AWS"], interests: ["healthcare"], team: "—", my_twin: "Monitor air quality impact on my asthma" },
-        { name: "Yash Maheshwari", github: "yash-mahi", level: 1, score: 0, skills: ["fastapi","langchain","docker"], interests: ["agents","security"], team: "—", my_twin: "Correlate screen time with sleep quality" },
-        { name: "Suhani Sharma", github: "suhani-dev", level: 1, score: 0, skills: ["react","nextjs","openai"], interests: ["NLP","3D"], team: "—", my_twin: "Track social interactions vs mood patterns" },
-        { name: "Touqeer Hamdani", github: "touqeer-h", level: 1, score: 0, skills: ["fastapi","supabase","pytorch"], interests: ["agents","edge"], team: "—", my_twin: "Monitor prayer times and focus correlation" },
-        { name: "Faariyh Rizwan", github: "faariyh", level: 1, score: 0, skills: ["c++","java","DSA"], interests: ["security"], team: "—", my_twin: "Track coding hours vs bug introduction rate" },
-        { name: "Anishaa Chaudhuri", github: "anishaa-c", level: 1, score: 0, skills: ["fastapi","supabase","XAI"], interests: ["agents","healthcare"], team: "—", my_twin: "Monitor stress biomarkers during exam season" },
-        { name: "Lavanya Parashar", github: "lavanya-p", level: 1, score: 0, skills: ["python","NLP","streamlit"], interests: ["NLP"], team: "—", my_twin: "Track reading habits vs knowledge retention" },
-        { name: "Anam Singh", github: "anam-singh", level: 1, score: 0, skills: ["fastapi","YOLOv8","streamlit"], interests: ["agents","3D"], team: "—", my_twin: "Monitor posture during long coding sessions" },
-        { name: "Anshumaan Singh", github: "anshumaan", level: 1, score: 0, skills: ["react","arduino","REST"], interests: ["digital-twin","IoT"], team: "—", my_twin: "Build a twin of my home energy consumption" },
+        { t: "18:32", cls: "feed-new", txt: "32 Level 1 PRs received — auto-merging valid ones" },
+        { t: "14:15", cls: "feed-new", txt: "First PR: Aarav Sharma registered in 3 minutes" },
+        { t: "10:00", cls: "feed-new", txt: "Screening challenge email sent to 101 interns" },
     ],
     day3: [
-        { name: "Siddhi Sahu", github: "siddhi-sahu", level: 2, score: 4, skills: ["python","tensorflow","fastapi","RAG"], interests: ["agents"], team: "—" },
-        { name: "Yash Maheshwari", github: "yash-mahi", level: 2, score: 5, skills: ["fastapi","langchain","docker"], interests: ["agents","security"], team: "—" },
-        { name: "Anishaa Chaudhuri", github: "anishaa-c", level: 2, score: 4, skills: ["fastapi","supabase","XAI"], interests: ["agents","healthcare"], team: "—" },
-        { name: "Touqeer Hamdani", github: "touqeer-h", level: 2, score: 3, skills: ["fastapi","supabase","pytorch"], interests: ["agents","edge"], team: "—" },
-        { name: "Suhani Sharma", github: "suhani-dev", level: 2, score: 4, skills: ["react","nextjs","openai"], interests: ["NLP","3D"], team: "—" },
-        { name: "Ananyaa M", github: "ananyaa-m", level: 2, score: 3, skills: ["python","tensorflow","AWS"], interests: ["healthcare"], team: "—" },
-        { name: "Anshumaan Singh", github: "anshumaan", level: 2, score: 3, skills: ["react","arduino","REST"], interests: ["digital-twin","IoT"], team: "—" },
-        { name: "Faariyh Rizwan", github: "faariyh", level: 1, score: 0, skills: ["c++","java","DSA"], interests: ["security"], team: "—" },
-        { name: "Lavanya Parashar", github: "lavanya-p", level: 1, score: 0, skills: ["python","NLP","streamlit"], interests: ["NLP"], team: "—" },
-        { name: "Anam Singh", github: "anam-singh", level: 1, score: 0, skills: ["fastapi","YOLOv8","streamlit"], interests: ["agents","3D"], team: "—" },
-        { name: "Priya Sharma", github: "priya-dev", level: 1, score: 0, skills: ["python","pandas","flask"], interests: ["healthcare"], team: "—" },
-        { name: "Harshit Kumar", github: "harshit-k", level: 1, score: 0, skills: ["react","javascript","node"], interests: ["agents"], team: "—" },
-        { name: "Deepanshu", github: "deepanshu99", level: 1, score: 0, skills: ["python","sql","powerbi"], interests: ["data"], team: "—" },
+        { t: "21:05", cls: "feed-star", txt: "First Level 3 submission! Aarav built a SMILE advisor agent" },
+        { t: "16:30", cls: "feed-up", txt: "22 interns reached Level 2 — stack running on their laptops" },
+        { t: "11:20", cls: "feed-new", txt: "71 of 101 have registered (Level 1)" },
+        { t: "09:00", cls: "feed-drop", txt: "4 interns had npm install failures — posted troubleshooting in Teams" },
     ],
     day7: [
-        { name: "Yash Maheshwari", github: "yash-mahi", level: 3, score: 9, skills: ["fastapi","langchain","docker"], interests: ["agents","security"], team: "—" },
-        { name: "Siddhi Sahu", github: "siddhi-sahu", level: 3, score: 8, skills: ["python","tensorflow","fastapi","RAG"], interests: ["agents"], team: "—" },
-        { name: "Anishaa Chaudhuri", github: "anishaa-c", level: 3, score: 8, skills: ["fastapi","supabase","XAI"], interests: ["agents","healthcare"], team: "—" },
-        { name: "Touqeer Hamdani", github: "touqeer-h", level: 3, score: 7, skills: ["fastapi","supabase","pytorch"], interests: ["agents","edge"], team: "—" },
-        { name: "Suhani Sharma", github: "suhani-dev", level: 3, score: 7, skills: ["react","nextjs","openai"], interests: ["NLP","3D"], team: "—" },
-        { name: "Anshumaan Singh", github: "anshumaan", level: 3, score: 6, skills: ["react","arduino","REST"], interests: ["digital-twin","IoT"], team: "—" },
-        { name: "Ananyaa M", github: "ananyaa-m", level: 2, score: 4, skills: ["python","tensorflow","AWS"], interests: ["healthcare"], team: "—" },
-        { name: "Faariyh Rizwan", github: "faariyh", level: 2, score: 3, skills: ["c++","java","DSA"], interests: ["security"], team: "—" },
-        { name: "Anam Singh", github: "anam-singh", level: 2, score: 3, skills: ["fastapi","YOLOv8","streamlit"], interests: ["agents","3D"], team: "—" },
-        { name: "Lavanya Parashar", github: "lavanya-p", level: 2, score: 3, skills: ["python","NLP","streamlit"], interests: ["NLP"], team: "—" },
-        { name: "Priya Sharma", github: "priya-dev", level: 2, score: 2, skills: ["python","pandas","flask"], interests: ["healthcare"], team: "—" },
-        { name: "Harshit Kumar", github: "harshit-k", level: 1, score: 0, skills: ["react","javascript","node"], interests: ["agents"], team: "—" },
-        { name: "Deepanshu", github: "deepanshu99", level: 1, score: 0, skills: ["python","sql","powerbi"], interests: ["data"], team: "—" },
-        { name: "Misha Arora", github: "misha-a", level: 1, score: 0, skills: ["python","pandas","R"], interests: ["data"], team: "—" },
-        { name: "Joydeep Nandi", github: "joydeep-n", level: 1, score: 0, skills: ["python","pytorch","CV"], interests: ["3D"], team: "—" },
+        { t: "23:59", cls: "feed-star", txt: "Deadline reached: 18 Level 3 agents submitted" },
+        { t: "18:00", cls: "feed-up", txt: "Anishaa's healthcare agent scored 9/11 — highest so far" },
+        { t: "14:30", cls: "feed-drop", txt: "5 interns marked as dropped (no activity since Day 1)" },
+        { t: "10:15", cls: "feed-up", txt: "48 interns at Level 2+, 81 total registered" },
+        { t: "08:00", cls: "feed-new", txt: "20 interns still at Level 1 — sending encouragement message" },
     ],
     week2: [
-        { name: "Yash Maheshwari", github: "yash-mahi", level: 3, score: 11, skills: ["fastapi","langchain","docker"], interests: ["agents","security"], team: "Agent Builders" },
-        { name: "Siddhi Sahu", github: "siddhi-sahu", level: 3, score: 10, skills: ["python","tensorflow","fastapi","RAG"], interests: ["agents"], team: "Agent Builders" },
-        { name: "Anishaa Chaudhuri", github: "anishaa-c", level: 3, score: 9, skills: ["fastapi","supabase","XAI"], interests: ["agents","healthcare"], team: "Agent Builders" },
-        { name: "Touqeer Hamdani", github: "touqeer-h", level: 3, score: 8, skills: ["fastapi","supabase","pytorch"], interests: ["agents","edge"], team: "AI/ML Pipeline" },
-        { name: "Suhani Sharma", github: "suhani-dev", level: 3, score: 8, skills: ["react","nextjs","openai"], interests: ["NLP","3D"], team: "3D & Visualization" },
-        { name: "Anshumaan Singh", github: "anshumaan", level: 3, score: 7, skills: ["react","arduino","REST"], interests: ["digital-twin","IoT"], team: "Agent Builders" },
-        { name: "Faariyh Rizwan", github: "faariyh", level: 3, score: 6, skills: ["c++","java","DSA"], interests: ["security"], team: "QA & Security" },
-        { name: "Ananyaa M", github: "ananyaa-m", level: 3, score: 6, skills: ["python","tensorflow","AWS"], interests: ["healthcare"], team: "AI/ML Pipeline" },
-        { name: "Anam Singh", github: "anam-singh", level: 2, score: 4, skills: ["fastapi","YOLOv8","streamlit"], interests: ["agents","3D"], team: "Data & Knowledge" },
-        { name: "Lavanya Parashar", github: "lavanya-p", level: 2, score: 4, skills: ["python","NLP","streamlit"], interests: ["NLP"], team: "Research & Content" },
-        { name: "Priya Sharma", github: "priya-dev", level: 2, score: 3, skills: ["python","pandas","flask"], interests: ["healthcare"], team: "Research & Content" },
-        { name: "Deepanshu", github: "deepanshu99", level: 2, score: 3, skills: ["python","sql","powerbi"], interests: ["data"], team: "Data & Knowledge" },
-        { name: "Misha Arora", github: "misha-a", level: 2, score: 2, skills: ["python","pandas","R"], interests: ["data"], team: "Data & Knowledge" },
-        { name: "Harshit Kumar", github: "harshit-k", level: 1, score: 0, skills: ["react","javascript","node"], interests: ["agents"], team: "Research & Content" },
-        { name: "Joydeep Nandi", github: "joydeep-n", level: 1, score: 0, skills: ["python","pytorch","CV"], interests: ["3D"], team: "3D & Visualization" },
+        { t: "Fri", cls: "feed-star", txt: "First Demo Day: 8 agents presented, Yash's multi-tool agent wins" },
+        { t: "Thu", cls: "feed-up", txt: "Teams formed: 6 teams, 5 team leads assigned" },
+        { t: "Wed", cls: "feed-drop", txt: "12 total dropouts — mostly Level 1 who never progressed" },
+        { t: "Tue", cls: "feed-up", txt: "28 Level 3 agents — 10 more since deadline (late submissions accepted)" },
+        { t: "Mon", cls: "feed-new", txt: "Daily standups started across all 6 teams" },
     ],
     week4: [
-        { name: "Yash Maheshwari", github: "yash-mahi", level: 3, score: 14, skills: ["fastapi","langchain","docker","langgraph"], interests: ["agents","security"], team: "Agent Builders", agents: 3 },
-        { name: "Siddhi Sahu", github: "siddhi-sahu", level: 3, score: 13, skills: ["python","tensorflow","fastapi","RAG"], interests: ["agents"], team: "Agent Builders", agents: 2 },
-        { name: "Anishaa Chaudhuri", github: "anishaa-c", level: 3, score: 12, skills: ["fastapi","supabase","XAI","MCP"], interests: ["agents","healthcare"], team: "Agent Builders", agents: 2 },
-        { name: "Faariyh Rizwan", github: "faariyh", level: 3, score: 11, skills: ["c++","java","security","pentest"], interests: ["security"], team: "QA & Security", agents: 1 },
-        { name: "Touqeer Hamdani", github: "touqeer-h", level: 3, score: 10, skills: ["fastapi","pytorch","edge","MCP"], interests: ["agents","edge"], team: "AI/ML Pipeline", agents: 2 },
-        { name: "Suhani Sharma", github: "suhani-dev", level: 3, score: 10, skills: ["react","nextjs","three.js"], interests: ["NLP","3D"], team: "3D & Visualization", agents: 1 },
-        { name: "Anshumaan Singh", github: "anshumaan", level: 3, score: 9, skills: ["react","arduino","REST","A2A"], interests: ["digital-twin","IoT"], team: "Agent Builders", agents: 1 },
-        { name: "Ananyaa M", github: "ananyaa-m", level: 3, score: 9, skills: ["python","tensorflow","RAG"], interests: ["healthcare"], team: "AI/ML Pipeline", agents: 1 },
-        { name: "Priya Sharma", github: "priya-dev", level: 3, score: 7, skills: ["python","pandas","flask","MCP"], interests: ["healthcare"], team: "Research & Content", agents: 1 },
-        { name: "Anam Singh", github: "anam-singh", level: 3, score: 7, skills: ["fastapi","YOLOv8","streamlit"], interests: ["agents","3D"], team: "Data & Knowledge", agents: 1 },
-        { name: "Lavanya Parashar", github: "lavanya-p", level: 3, score: 6, skills: ["python","NLP","streamlit","MCP"], interests: ["NLP"], team: "Research & Content", agents: 1 },
-        { name: "Deepanshu", github: "deepanshu99", level: 2, score: 4, skills: ["python","sql","powerbi"], interests: ["data"], team: "Data & Knowledge", agents: 0 },
-        { name: "Misha Arora", github: "misha-a", level: 2, score: 4, skills: ["python","pandas","R"], interests: ["data"], team: "Data & Knowledge", agents: 0 },
-        { name: "Harshit Kumar", github: "harshit-k", level: 2, score: 3, skills: ["react","javascript","node"], interests: ["agents"], team: "Research & Content", agents: 0 },
-        { name: "Joydeep Nandi", github: "joydeep-n", level: 2, score: 2, skills: ["python","pytorch","CV"], interests: ["3D"], team: "3D & Visualization", agents: 0 },
+        { t: "Fri", cls: "feed-star", txt: "35 agents live. 3 multi-agent workflows using LangGraph submitted" },
+        { t: "Wed", cls: "feed-up", txt: "Faariyh's security audit found prompt injection vector — fixed same day" },
+        { t: "Tue", cls: "feed-drop", txt: "18 total dropouts. 67 active contributors." },
+        { t: "Mon", cls: "feed-star", txt: "First A2A agent card submitted — agents discovering each other" },
     ],
     month2: [
-        { name: "Yash Maheshwari", github: "yash-mahi", level: 3, score: 22, skills: ["fastapi","langchain","langgraph","MCP","A2A","security"], interests: ["agents","security"], team: "Agent Builders (Lead)", agents: 7 },
-        { name: "Siddhi Sahu", github: "siddhi-sahu", level: 3, score: 20, skills: ["python","tensorflow","RAG","MCP","crewai"], interests: ["agents"], team: "AI/ML Pipeline (Lead)", agents: 5 },
-        { name: "Anishaa Chaudhuri", github: "anishaa-c", level: 3, score: 19, skills: ["fastapi","supabase","XAI","MCP","A2A"], interests: ["agents","healthcare"], team: "Agent Builders", agents: 4 },
-        { name: "Faariyh Rizwan", github: "faariyh", level: 3, score: 18, skills: ["security","pentest","MCP","threat-model"], interests: ["security"], team: "QA & Security (Lead)", agents: 3 },
-        { name: "Touqeer Hamdani", github: "touqeer-h", level: 3, score: 17, skills: ["fastapi","pytorch","edge","MCP","MQTT"], interests: ["agents","edge"], team: "AI/ML Pipeline", agents: 4 },
-        { name: "Priya Sharma", github: "priya-dev", level: 3, score: 16, skills: ["python","flask","MCP","healthcare","SMILE"], interests: ["healthcare"], team: "Research & Content (Lead)", agents: 3 },
-        { name: "Suhani Sharma", github: "suhani-dev", level: 3, score: 15, skills: ["react","nextjs","three.js","WebGL"], interests: ["NLP","3D"], team: "3D & Visualization (Lead)", agents: 2 },
-        { name: "Anshumaan Singh", github: "anshumaan", level: 3, score: 14, skills: ["react","arduino","A2A","IoT","MCP"], interests: ["digital-twin","IoT"], team: "Agent Builders", agents: 3 },
-        { name: "Ananyaa M", github: "ananyaa-m", level: 3, score: 13, skills: ["python","tensorflow","RAG","embeddings"], interests: ["healthcare"], team: "AI/ML Pipeline", agents: 2 },
-        { name: "Anam Singh", github: "anam-singh", level: 3, score: 12, skills: ["fastapi","YOLOv8","neo4j","MCP"], interests: ["agents","3D"], team: "Data & Knowledge (Lead)", agents: 2 },
-        { name: "Lavanya Parashar", github: "lavanya-p", level: 3, score: 11, skills: ["python","NLP","SMILE","content"], interests: ["NLP"], team: "Research & Content", agents: 2 },
-        { name: "Deepanshu", github: "deepanshu99", level: 3, score: 9, skills: ["python","sql","powerbi","MCP"], interests: ["data"], team: "Data & Knowledge", agents: 1 },
-        { name: "Misha Arora", github: "misha-a", level: 3, score: 8, skills: ["python","pandas","R","analytics"], interests: ["data"], team: "Data & Knowledge", agents: 1 },
-        { name: "Harshit Kumar", github: "harshit-k", level: 3, score: 7, skills: ["react","javascript","MCP","node"], interests: ["agents"], team: "Agent Builders", agents: 1 },
-        { name: "Joydeep Nandi", github: "joydeep-n", level: 3, score: 6, skills: ["python","pytorch","CV","unreal"], interests: ["3D"], team: "3D & Visualization", agents: 1 },
-    ]
+        { t: "Fri", cls: "feed-star", txt: "42 Level 3 contributors, 118 agents total in the ecosystem" },
+        { t: "Thu", cls: "feed-up", txt: "Knowledge base grew from 63 to 89 entries via intern research" },
+        { t: "Wed", cls: "feed-star", txt: "Priya went L1→L3 in 5 weeks — highest growth velocity score" },
+        { t: "Tue", cls: "feed-up", txt: "6 team leads running autonomous standups — zero Nicolas time" },
+        { t: "Mon", cls: "feed-drop", txt: "25 total dropouts stabilized. 60 active, 42 shipping code weekly." },
+    ],
 };
 
-let currentTimeline = 'day1';
-let currentFilter = 'all';
-let searchQuery = '';
+const alerts = {
+    day1: ["32 of 101 registered on Day 1 — 69 remaining"],
+    day3: ["First Level 3 agent submitted!", "4 interns blocked on npm install — check troubleshooting guide"],
+    day7: ["20 interns stuck at Level 1 — consider a reminder nudge", "18 Level 3 agents — evaluation queue building up"],
+    week2: ["12 dropouts detected (>7 days no activity)", "Team QA & Security has only 3 members — consider merging"],
+    week4: ["Conversion: 35% of registrants reached Level 3", "3 interns haven't attended standups in 5+ days"],
+    month2: ["Program health: 60 active / 25 dropped / 16 dormant", "Top performers ready for advanced modules: Aarav, Aditi, Anishaa"],
+};
 
-function setTimeline(key) {
-    currentTimeline = key;
-    document.querySelectorAll('.timeline-btn').forEach(b => b.classList.remove('active'));
-    event.target.classList.add('active');
-    render();
-}
+let cur = 'day1', curFilt = 'all', curSearch = '';
 
-function filterLevel(level) {
-    currentFilter = level;
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    event.target.classList.add('active');
-    render();
-}
-
-function filterTable(query) {
-    searchQuery = query.toLowerCase();
-    render();
-}
+function go(stage, el) { cur = stage; document.querySelectorAll('.timeline button').forEach(b => b.classList.remove('active')); el.classList.add('active'); render(); }
+function filt(f, el) { curFilt = f; document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('active')); el.classList.add('active'); render(); }
+function search(q) { curSearch = q.toLowerCase(); render(); }
 
 function render() {
-    let data = MOCK_DATA[currentTimeline] || [];
+    let data = generateCohort(cur);
+    const allData = data;
 
-    if (currentFilter !== 'all') {
-        data = data.filter(d => d.level === currentFilter);
-    }
+    // Stats
+    const total = data.length;
+    const active = data.filter(d => !d.dropped).length;
+    const l2plus = data.filter(d => d.level >= 2).length;
+    const l3 = data.filter(d => d.level >= 3).length;
+    const ag = data.reduce((s, d) => s + (d.agents || 0), 0);
+    const drop = data.filter(d => d.dropped).length;
+    const l1count = data.filter(d => d.level >= 1 && !d.dropped).length;
+    const conv = l1count > 0 ? Math.round((l3 / l1count) * 100) : 0;
 
-    if (searchQuery) {
-        data = data.filter(d =>
-            d.name.toLowerCase().includes(searchQuery) ||
-            d.skills.some(s => s.toLowerCase().includes(searchQuery)) ||
-            (d.team && d.team.toLowerCase().includes(searchQuery)) ||
-            (d.interests && d.interests.some(i => i.toLowerCase().includes(searchQuery)))
-        );
-    }
+    document.getElementById('s-total').textContent = total;
+    document.getElementById('s-active').textContent = active;
+    document.getElementById('s-l2').textContent = l2plus;
+    document.getElementById('s-l3').textContent = l3;
+    document.getElementById('s-agents').textContent = ag;
+    document.getElementById('s-drop').textContent = drop;
+    document.getElementById('s-conv').textContent = conv + '%';
 
-    // Update stats
-    const all = MOCK_DATA[currentTimeline] || [];
-    document.getElementById('stat-total').textContent = all.length;
-    document.getElementById('stat-l1').textContent = all.filter(d => d.level >= 1).length;
-    document.getElementById('stat-l2').textContent = all.filter(d => d.level >= 2).length;
-    document.getElementById('stat-l3').textContent = all.filter(d => d.level >= 3).length;
-    document.getElementById('stat-agents').textContent = all.reduce((sum, d) => sum + (d.agents || 0), 0);
+    // Filter
+    if (curFilt === 0) data = data.filter(d => d.dropped);
+    else if (curFilt !== 'all') data = data.filter(d => d.level === curFilt && !d.dropped);
+    if (curSearch) data = data.filter(d => d.name.toLowerCase().includes(curSearch) || d.skills.some(s => s.includes(curSearch)) || d.team.toLowerCase().includes(curSearch));
 
-    const tbody = document.getElementById('leaderboard-body');
-    if (data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:3rem;color:#4a5568">No contributors match your filter</td></tr>';
-        return;
-    }
-
-    const maxScore = Math.max(...data.map(d => d.score), 1);
-
+    // Table
+    const maxSc = Math.max(...allData.map(d => d.score), 1);
+    const tbody = document.getElementById('tbody');
     tbody.innerHTML = data.map((d, i) => {
-        const rankClass = i < 3 ? `rank-${i+1}` : '';
-        const topClass = i < 3 ? 'top-3' : '';
-        const levelClass = `level-${d.level}`;
-        const scorePct = Math.round((d.score / maxScore) * 100);
-        const skillsHtml = d.skills.slice(0, 4).map(s => `<span class="skills-tag">${s}</span>`).join('');
-        const teamStr = d.team || '—';
-        const agentCount = d.agents ? ` (${d.agents} agents)` : '';
-
-        return `<tr class="${topClass} animate-in" style="animation-delay:${i * 0.03}s">
-            <td class="${rankClass}">${i + 1}</td>
-            <td><strong>${d.name}</strong></td>
-            <td><a href="https://github.com/${d.github}">${d.github}</a></td>
-            <td><span class="level-badge ${levelClass}">L${d.level}</span></td>
-            <td><span class="score-bar"><span class="fill" style="width:${scorePct}%"></span></span><span class="score-text">${d.score}${agentCount}</span></td>
-            <td>${skillsHtml}</td>
-            <td>${teamStr}</td>
-        </tr>`;
+        const rc = i === 0 ? 'r1' : i === 1 ? 'r2' : i === 2 ? 'r3' : '';
+        const lvCls = d.dropped ? 'lv0' : `lv${d.level}`;
+        const lvTxt = d.dropped ? 'DROP' : `L${d.level}`;
+        const pct = Math.round((d.score / maxSc) * 100);
+        const tags = d.skills.slice(0, 3).map(s => `<span class="tag">${s}</span>`).join('');
+        const vCls = d.velocity.includes('+') ? 'v-up' : d.velocity === 'new' ? 'v-new' : 'v-flat';
+        const vTxt = d.velocity || '—';
+        const agTxt = d.agents ? ` <span style="color:#b794f4;font-size:0.7rem">${d.agents}x</span>` : '';
+        return `<tr><td class="${rc}">${i+1}</td><td>${d.name}${agTxt}</td><td><span class="lv ${lvCls}">${lvTxt}</span></td><td><span class="bar"><span class="fill" style="width:${pct}%"></span></span><span class="sc">${d.score}</span></td><td><span class="velocity ${vCls}">${vTxt}</span></td><td>${tags}</td><td style="font-size:0.75rem;color:#718096">${d.team}</td></tr>`;
     }).join('');
-}
 
-// Initial render
+    // Alerts
+    const al = alerts[cur] || [];
+    document.getElementById('alerts-panel').innerHTML = al.length ? al.map(a => `<div class="alert">${a}</div>`).join('') : '';
+
+    // Feed
+    const f = feeds[cur] || [];
+    document.getElementById('feed').innerHTML = f.map(fi => `<div class="feed-item"><span class="feed-time">${fi.t}</span> <span class="${fi.cls}">${fi.txt}</span></div>`).join('');
+
+    // Teams
+    const teamCounts = {};
+    allData.filter(d => !d.dropped && d.team !== '—').forEach(d => {
+        const t = d.team.replace(/ \(Lead\)/, '');
+        teamCounts[t] = (teamCounts[t] || 0) + 1;
+    });
+    const maxTeam = Math.max(...Object.values(teamCounts), 1);
+    const colors = { "Agent Builders": "#b794f4", "AI/ML Pipeline": "#63b3ed", "Research & Content": "#68d391", "QA & Security": "#fc8181", "Data & Knowledge": "#ffd700", "3D & Visualization": "#ed8936" };
+    document.getElementById('teams').innerHTML = Object.entries(teamCounts).sort((a,b) => b[1]-a[1]).map(([t, c]) => {
+        const col = colors[t] || '#63b3ed';
+        const w = Math.round((c / maxTeam) * 100);
+        return `<div class="team-bar"><span class="tname">${t}</span><div class="tbar"><div class="tfill" style="width:${w}%;background:${col}"></div></div><span class="tcount">${c}</span></div>`;
+    }).join('') || '<div style="color:#4a5568;font-size:0.8rem">Teams form after Week 1</div>';
+
+    // Funnel
+    const l1c = allData.filter(d => d.level >= 1).length;
+    const l2c = allData.filter(d => d.level >= 2).length;
+    const l3c = allData.filter(d => d.level >= 3).length;
+    const dc = allData.filter(d => d.dropped).length;
+    document.getElementById('funnel').innerHTML = `
+        <div style="font-size:0.8rem">
+            <div style="margin-bottom:0.4rem">Invited: <b>101</b></div>
+            <div style="margin-bottom:0.4rem">Registered (L1): <b>${l1c}</b> <span style="color:#718096">(${Math.round(l1c/101*100)}%)</span></div>
+            <div style="margin-bottom:0.4rem">Stack Running (L2): <b>${l2c}</b> <span style="color:#718096">(${Math.round(l2c/101*100)}%)</span></div>
+            <div style="margin-bottom:0.4rem">Agent Built (L3): <b>${l3c}</b> <span style="color:#718096">(${Math.round(l3c/101*100)}%)</span></div>
+            <div style="color:#fc8181">Dropped: <b>${dc}</b> <span style="color:#718096">(${Math.round(dc/101*100)}%)</span></div>
+        </div>`;
+}
 render();
 </script>
 </body>
