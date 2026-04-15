@@ -260,9 +260,17 @@ function render() {
 
         const badges = (d._badges || []).map(b => `<span data-tip="${b.tip}" style="cursor:help;margin-left:0.2rem">${b.icon}</span>`).join('');
 
+        // Level indicator next to name
+        const lvColors = {1:'#68d391',2:'#63b3ed',3:'#b794f4'};
+        const lvNum = `<span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:${lvColors[d.level]||'#718096'}20;color:${lvColors[d.level]||'#718096'};font-size:0.65rem;font-weight:700;font-family:'JetBrains Mono',monospace;margin-right:0.4rem;border:1px solid ${lvColors[d.level]||'#718096'}40">${d.level}</span>`;
+
+        // Track count
+        const trackCount = d.track ? d.track.split(/[,\/&]/).filter(t => t.trim()).length : 0;
+        const trackBadge = trackCount > 1 ? `<span style="font-size:0.6rem;color:#ed8936;margin-left:0.3rem" data-tip="${trackCount} tracks">${trackCount}x</span>` : '';
+
         return `<tr>
             <td class="${rc}">${i + 1}</td>
-            <td><strong>${d.name}</strong>${badges}</td>
+            <td>${lvNum}<strong>${d.name}</strong>${trackBadge}${badges}</td>
             <td><span class="lv ${lvCls}">${lvTxt}</span></td>
             <td>${scoreDisplay}</td>
             <td style="font-size:0.78rem;color:#a0aec0">${track}</td>
