@@ -182,7 +182,8 @@ fetch('data.json')
             // Easter egg finder
             if (d.found_easter_egg) d._badges.push({icon:'🥚', tip:'Found the easter egg in the source code'});
             // Multi-track
-            const tc = (d.track||'').split(/[,\/]/).filter(t => t.trim() && t.trim().match(/^[A-E]/)).length;
+            const trackLetters = (d.track||'').match(/\b[A-E](?=\s*[:\.])/g);
+            const tc = trackLetters ? new Set(trackLetters).size : (d.track ? 1 : 0);
             if (tc >= 5) d._badges.push({icon:'💎', tip:'Diamond — completed ALL 5 tracks'});
             else if (tc >= 3) d._badges.push({icon:'🔥', tip:'On Fire — active in 3+ tracks'});
             else if (tc >= 2) d._badges.push({icon:'⚡', tip:'Multi-track — active in 2 tracks'});
