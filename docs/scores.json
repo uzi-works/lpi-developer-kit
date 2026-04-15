@@ -38,5 +38,13 @@
     "max": 5,
     "pct": 100,
     "updated": "2026-04-15T15:00:10.895Z"
+  },
+  "shourya-solanki": {
+    "name": "Shourya Solanki",
+    "level": 3,
+    "score": 7,
+    "max": 11,
+    "pct": 64,
+    "updated": "2026-04-15T15:09:49.515Z"
   }
 }
